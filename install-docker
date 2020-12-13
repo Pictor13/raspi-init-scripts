@@ -1,13 +1,31 @@
 sudo apt update && sudo apt upgrade -y
 
-# METHOD 1
-#curl -sSL https://get.docker.com | sh
-# Add the pi account to the docker user group so that you can execute docker commands without sudo
-#sudo usermod -aG docker pi
+# METHOD 1 (latest version of docker)
+#apt install --yes python3-paramiko
+#pip3 install docker-compose
 
-# METHOD 2
+# METHOD 2 (currently installs version 18.09)
 # to prevent https://raspberrypi.stackexchange.com/q/111198
 sudo apt-get --yes install needrestart
-# install docker (currently version 18.x)
+# install docker
 sudo apt-get --yes install docker.io
 sudo apt-get install --yes docker-compose
+
+
+# Add the pi account to the docker user group so that you can execute docker commands without sudo
+sudo groupadd docker
+sudo usermod -aG docker pi
+
+echo "WARNING: it is necessary to reboot in order to use `docker` without `sudo`
+
+
+# Run daemon with Portainer, for containers monitoring
+docker run -d --restart unless-stopped \
+	   -p 9000:9000 -v /var/run/docker.sock:/var/run/docker.sock \
+	   portainer/portainer:arm
+
+echo
+echo "You can monitor your containers via Portainer, at http://localhost:9000/
+
+# NOTE: if having permission problems when running Docker without `sudo`
+#	check the article at https://linuxhandbook.com/docker-permission-denied/
