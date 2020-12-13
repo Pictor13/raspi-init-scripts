@@ -1,0 +1,31 @@
+1. `sudo raspi-config` (or from HomeMenu->Preferences->RaspberryPiConfiguration)
+- chose Interfaces
+- enable SSH
+
+1a. (optional) it is recommended to change default password for user Pi
+- `sudo passwd`
+
+2. To enable access by typing password:
+- `sudo /etc/ssh/sshd_config`
+- `PasswordAuthentication yes`
+- `ChallengeResponseAuthentication yes`
+
+3. (optional) Enable access via openssl private key
+- generate RSA key on client (`id_rsa.pub`)
+- still on the client, copy it to the RasPi ssh-server via
+`scp $HOME/.ssh/id_rsa.pub pi@raspberrypi:/home/pi/myHomeComputer.id_rsa.pub`
+
+3a. on the server (RasPi), add the key to the local `$HOME/.ssh/authorized_keys`,
+via GUI text editor or via shell with
+- `touch /home/pi/.ssh/authorized_keys`
+- `cat /home/pi/myHomeComputer.id_rsa.pub >> /home/pi/.ssh/authorized_keys`
+
+4. From the client, connect to the RasPi via SSH
+- `ssh pi@raspberrypi`
+
+NOTEs:
+- if you copied your machine's public key then you'll get logged in automatically
+- if you enabled the config options then you'll get asked the password for user `pi`
+- if `raspberrypi` hostname doesn't resolve (try also `raspberrypi.local`)
+you can obtain the IP address via `nmap raspberrypi` (might be necessary to install it
+on the client machine)

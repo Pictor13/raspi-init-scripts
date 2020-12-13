@@ -1,0 +1,5 @@
+cp -R --no-target-directory ./config/  /home/pi/
+echo ". /home/pi/.bash_custom" >> /home/pi/.bashrc
+
+# Note: is not necessary to add an entry for bash_aliases,
+# since they are already loaded by Raspbian .bashrc
