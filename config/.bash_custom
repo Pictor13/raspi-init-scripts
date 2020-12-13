@@ -10,10 +10,3 @@ HISTFILESIZE=200000
 if [ -f ~/.personal.env ]; then
     . ~/.personal.env
 fi
-
-
-### Dependant environment variables
-
-export GIT_COMMITTER_NAME="${GIT_AUTHOR_NAME}" 		# human name for the “committer” field.
-export GIT_COMMITTER_EMAIL="${GIT_AUTHOR_EMAIL}" 	# email address for the “committer” field.
-

@@ -1,6 +1,6 @@
-echo "Ensure GIT_EMAIL and GIT_USERNAME env variables are initialised"
-git config --global user.email "$GIT_EMAIL"
-git config --global user.name "$GIT_USERNAME"
+#echo "Ensure GIT_EMAIL and GIT_USERNAME env variables are initialised"
+#git config --global user.email "$GIT_EMAIL"
+#git config --global user.name "$GIT_USERNAME"
 
 # install CLI to manage GitHub.com from shell
 sudo apt-get install github-cli
