@@ -10,3 +10,4 @@ sudo apt update && sudo apt upgrade -y
 sudo apt-get --yes install needrestart
 # install docker (currently version 18.x)
 sudo apt-get --yes install docker.io
+sudo apt-get install --yes docker-compose
