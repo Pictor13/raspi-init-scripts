@@ -1,10 +1,14 @@
+set -o pipefail
 
-if [ ! cat /etc/dhcpcd.conf | grep "## >>>INIT-SCRIPTS" ];
+if ( ! cat /etc/dhcpcd.conf | grep "## >>>PIMP-CONFIG" &>/dev/null);
 then
     # (eventually) set default values, compile source file
     # and append compiled one into destination 
     GATEWAY="${GATEWAY:-'10.0.0.1'}" \
-    FOO_ENV="${FOO_ENV:-'defaultValue'}" \
     \
-    envsubst < config/network/dhcpcd.conf | sudo tee -a /etc/dhcpcd.conf
+    envsubst < config/network/dhcpcd.conf | sudo tee --append /etc/dhcpcd.conf >/dev/null
+    echo "static ip for interface Ethernet ($ETHERNET_IP) and Wifi ($WIFI_IP) was set"
+
+    echo "restart network interfaces"
+    sudo /etc/init.d/networking restart
 fi
