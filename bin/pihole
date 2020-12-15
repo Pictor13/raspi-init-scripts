@@ -10,9 +10,9 @@ usage() {
   echo -e "        -d|--debug         Debug output"
   echo -e ""
   echo -e "    COMMANDS:"
-  echo -e "      ${EHIGH}start${EEND} Start PiHole"
-  echo -e "      stop                 Stop PiHole"
-  echo -e "      status		          Show PiHole web interface"
+  echo -e "      ${EHIGH}start${EEND}		Start PiHole"
+  echo -e "      stop		Stop PiHole"
+  echo -e "      status		Show PiHole web interface"
   echo -e ""
   echo -e ""
   exit 1
@@ -21,7 +21,7 @@ usage() {
 readonly COMMAND=$1;
 shift || usage;
 for ARGUMENT in "$@"; do
-  case $ARGUMENT 
+  case $ARGUMENT in
     -d|--debug)
       DEBUG=1
     ;;
@@ -30,16 +30,16 @@ done
 
 cd docker/pihole
 
-case $COMMAND 
+case $COMMAND in
     start)
-        COMMAND="docker-compose up --detach --remove-orphans"
+        TARGET_COMMAND="docker-compose up --detach --remove-orphans"
     ;;
     stop)
-        COMMAND="docker-compose down"
+        TARGET_COMMAND="docker-compose down"
     ;;
     status)
-        COMMAND="xdg-open http://localhost:80/admin/"
+        TARGET_COMMAND="xdg-open http://localhost:80/admin/"
     ;;
 esac
 
-exec $COMMAND
+exec $TARGET_COMMAND
