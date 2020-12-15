@@ -11,23 +11,14 @@ Also, remember to close and reopen your shell, after running any script; or sour
 
 ## Instructions
 
-1. define your personal info (e.g. email) and secrets into `config/.personal.env`
-- duplicate the *dist* config, with `mv config/.personal.env.dist config/.personal.env`
-- `nano config/.personal.env` and and specify your custom settings (no need to set `GIT_` envs if not using *git*)
+1. define your personal info (e.g. email) and secrets into `config/.pimp.env`
+- duplicate the *dist* config, with `mv config/.pimp.env.dist config/.pimp.env`
+- `nano config/.pimp.env` and and specify your custom settings (no need to set `GIT_` envs if not using *git*)
+**NOTE:** 
 
 2. run `./config/install-custom-bash-config` to copy config files to `pi` user root
 - reboot, or open a new shell, or run ` . /home/pi/.bashrc`, in order to make your config effective
 **NOTE:** does not support other user name than `pi`, for now.
-
-3. configure WiFi & Ethernet network interfaces with static IPs
-- ensure envs exist in `.personal.env` and run:
-```
-sudo ip addr add “$WIFI_IP/$SUBNET_MASK" dev wlan0
-sudo ip addr add “$ETHERNET_IP/$SUBNET_MASK" dev eth0
-sudo ip link set dev wlan0 up
-sudo ip link set dev eth0 up
-sudo ip route add default via "$GATEWAY"
-```
 
 ## Additional commands (optional)
 
@@ -53,6 +44,5 @@ sudo ip route add default via "$GATEWAY"
 
 ## TODO:
 
-* add script for the RasPi to configure static local IP (`$SERVERIP` from *.personal.env*
 * support other users than default `pi`
 

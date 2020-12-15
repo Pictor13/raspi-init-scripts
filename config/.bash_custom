@@ -10,6 +10,6 @@ HISTFILESIZE=200000
 
 ### Load custom environment variables for values, settings or secrets
 
-if [ -f ~/.personal.env ]; then
-    . ~/.personal.env
+if [ -f ~/.pimp.env ]; then
+    . ~/.pimp.env
 fi
