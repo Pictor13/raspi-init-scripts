@@ -1,2 +1,45 @@
+
+readonly EHIGH="\033[49;1;32m"
+readonly EERROR="\033[49;1;31m"
+readonly EEND="\033[00m"
+
+usage() {
+  echo -e "${EHIGH}Usage:${EEND} ${0} COMMAND ARGUMENTS"
+  echo -e ""
+  echo -e "    ARGUMENTS:"
+  echo -e "        -d|--debug         Debug output"
+  echo -e ""
+  echo -e "    COMMANDS:"
+  echo -e "      ${EHIGH}start${EEND} Start PiHole"
+  echo -e "      stop                 Stop PiHole"
+  echo -e "      status		          Show PiHole web interface"
+  echo -e ""
+  echo -e ""
+  exit 1
+}
+
+readonly COMMAND=$1;
+shift || usage;
+for ARGUMENT in "$@"; do
+  case $ARGUMENT 
+    -d|--debug)
+      DEBUG=1
+    ;;
+  esac
+done
+
 cd docker/pihole
-docker-compose up --detach --remove-orphans
+
+case $COMMAND 
+    start)
+        COMMAND="docker-compose up --detach --remove-orphans"
+    ;;
+    stop)
+        COMMAND="docker-compose down"
+    ;;
+    status)
+        COMMAND="xdg-open http://localhost:80/admin/"
+    ;;
+esac
+
+exec $COMMAND
