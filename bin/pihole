@@ -33,6 +33,7 @@ cd docker/pihole
 case $COMMAND in
     start)
         TARGET_COMMAND="docker-compose up --detach --remove-orphans"
+        echo "Wait less than a minute for the service to be available"
     ;;
     stop)
         TARGET_COMMAND="docker-compose down"
