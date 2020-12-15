@@ -1,10 +1,24 @@
+set -o pipefail
+
 cd ./config
+
+# Copy all the necessary configuration files
 rsync -r . /home/pi/ --exclude .personal.env.dist
-echo ". /home/pi/.bash_custom" >> /home/pi/.bashrc
 
-# Note: is not necessary to add an entry for bash_aliases,
-# since they are already loaded by Raspbian .bashrc
+# Autoload pimp config at shell start
+if ( ! cat /home/pi/.bashrc | grep "## >>>PIMP-CONFIG" &>/dev/null);
+then
+	echo "
+	## >>>PIMP-CONFIG
+	 . /home/pi/.bash_custom
+	## <<<PIMP-CONFIG
+	" >> /home/pi/.bashrc
 
-echo "Config copied"
-echo "Use your configuration by sourcing bash-runcom:"
-echo " . /home/pi/.bashrc"
+	# Note: is not necessary to add an entry for bash_aliases,
+	# since they are already loaded by Raspbian .bashrc
+
+	echo \
+	"Config copied
+	Use your configuration by sourcing bash-runcom:
+	 . /home/pi/.bashrc"
+fi

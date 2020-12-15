@@ -1,8 +1,9 @@
 # Config your RaspberryPi
 
 **Model:** *Pi4 (8GB)*
+**OS:** Raspbian GNU/Linux 10 (buster)
 
-Should run good also with 2-8GB of RAM.
+Should run good also with 2-4GB of RAM.
 
 **IMPORTANT:** do not store secrets or personal informations in the repository files.
 
