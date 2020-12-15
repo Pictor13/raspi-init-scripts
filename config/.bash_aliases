@@ -3,7 +3,7 @@
 alias ll="ls -la --color=auto"
 alias l="ls -la --color=auto"
 
-if ($PIMP_GIT_ALIASES = 1)
+if [ $PIMP_GIT_ALIASES -eq 1 ]
 then
 	alias gss="git status"
 	alias gd="git diff"

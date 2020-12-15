@@ -10,16 +10,14 @@ echo "Updated config was copied to /home/pi"
 if ( ! cat /home/pi/.bashrc | grep "## >>>PIMP-CONFIG" &>/dev/null);
 then
 	echo "
-	## >>>PIMP-CONFIG
-	 . /home/pi/.bash_custom
-	## <<<PIMP-CONFIG
-	" >> /home/pi/.bashrc
+## >>>PIMP-CONFIG
+ . /home/pi/.bash_custom
+## <<<PIMP-CONFIG
+" >> /home/pi/.bashrc
 
 	# Note: is not necessary to add an entry for bash_aliases,
 	# since they are already loaded by Raspbian .bashrc
-
-	echo \
-	"Config copied
-	Use your configuration by sourcing bash-runcom:
-	 . /home/pi/.bashrc"
 fi
+
+echo "Use your configuration by sourcing bash-runcom:
+ . /home/pi/.bashrc"
