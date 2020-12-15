@@ -1,5 +1,10 @@
-cp -R --no-target-directory ./config/  /home/pi/
+cd ./config
+rsync -r . /home/pi/ --exclude .personal.env.dist
 echo ". /home/pi/.bash_custom" >> /home/pi/.bashrc
 
 # Note: is not necessary to add an entry for bash_aliases,
 # since they are already loaded by Raspbian .bashrc
+
+echo "Config copied"
+echo "Use your configuration by sourcing bash-runcom:"
+echo " . /home/pi/.bashrc"
