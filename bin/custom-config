@@ -4,6 +4,7 @@ cd ./config
 
 # Copy all the necessary configuration files
 rsync -r . /home/pi/ --exclude .personal.env.dist
+echo "Updated config was copied to /home/pi"
 
 # Autoload pimp config at shell start
 if ( ! cat /home/pi/.bashrc | grep "## >>>PIMP-CONFIG" &>/dev/null);
