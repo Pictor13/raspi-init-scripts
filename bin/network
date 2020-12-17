@@ -1,35 +1,79 @@
 set -o pipefail
 
+readonly EHIGH="\033[49;1;32m"
+readonly EERROR="\033[49;1;31m"
+readonly EEND="\033[00m"
 
-# set static IP for WIreless & Ethernet interfaces
-if [ -n $WIFI_IP ]
-then
-    sudo ip address add $WIFI_IP/$SUBNET_MASK dev wlan0
-    echo "wlan0 static ip address $WIFI_IP/$SUBNET_MASK was set"
-fi
+usage() {
+  echo -e "${EHIGH}Usage:${EEND} ${0} COMMAND ARGUMENTS"
+  echo -e ""
+  echo -e "    COMMANDS:"
+  echo -e "      ${EHIGH}static${EEND}                         Set a static IP address on Wireless & Ethernet interfaces"
+  echo -e "          --unset                    Unset the static IPs"
+  echo -e ""
+  echo -e ""
+  exit 1
+}
 
-if [ -n $ETHERNET_IP ]
-then
-    sudo ip address add $ETHERNET_IP/$SUBNET_MASK dev eth0
-    echo "eth0 static ip address $ETHERNET_IP/$SUBNET_MASK was set"
-fi
+readonly COMMAND=$1
+shift || usage
+case $COMMAND in
+    static)
+        if [ "$@" ]; then
+            case "$1" in
+                --unset )
+                    if [ -n $WIFI_IP ]; then
+                        sudo ip address del $WIFI_IP/$SUBNET_MASK dev wlan0
+                        sudo ip addr flush dev wlan0
+                    fi
+                    if [ -n $ETHERNET_IP ]; then
+                        sudo ip address del $ETHERNET_IP/$SUBNET_MASK dev eth0
+                        sudo ip addr flush dev eth0
+                    fi
+                    echo "unset Wireless & Ethernet static ip addresses"
+                    exit 0
+                ;;
+            esac
+        else
+            echo -E "Ethernet [$ETHERNET_IP]"
+            echo -E "Wireless [$WIFI_IP]"
+            echo -n "WARNING: Are you sure you want to set these static IP addresses? (y/n)? "
+            read -er choice
+            case "$choice" in
+                y|Y ) echo "-> replacing ip address (eth0/wlan0)";;
+                * ) echo "no" && exit 1;;
+            esac
 
+            # set static IP for WIreless & Ethernet interfaces
+            if [ -n $WIFI_IP ]
+            then
+                sudo ip address replace $WIFI_IP/$SUBNET_MASK dev wlan0
+                echo "wlan0 static ip address $WIFI_IP/$SUBNET_MASK was set"
+            fi
+            if [ -n $ETHERNET_IP ]
+            then
+                sudo ip address replace $ETHERNET_IP/$SUBNET_MASK dev eth0
+                echo "eth0 static ip address $ETHERNET_IP/$SUBNET_MASK was set"
+            fi
+        fi
 
-# speed up DHCP
-#  (https://wiki.archlinux.org/index.php/dhcpcd#DHCP_static_route(s)#Speed_up_DHCP_by_disabling_ARP_probing)
-echo "noarp" > /etc/dhcpcd.conf
+        # # speed up DHCP
+        # #  (https://wiki.archlinux.org/index.php/dhcpcd#DHCP_static_route(s)#Speed_up_DHCP_by_disabling_ARP_probing)
+        # echo "noarp" > /etc/dhcpcd.conf
+    ;;
+esac
 
 
 
 #######################
-#OHTERS:
+# Options:
 
 #sudo ip address add 192.168.178.48/24 dev wlan0
 #sudo ip address del 192.168.178.48/24 dev wlan0
 
 #/usr/lib/dhcpcd/dhcpcd-hooks/10-wireless-static-ip
 
-sudo dhcpcd -S ip_address=$WIFI_IP/$SUBNET_MASK \
-       -S routers=$GATEWAY \
-       -S domain_name_servers=$DNS1,$DNS2 \
-       wlan0
+# sudo dhcpcd -S ip_address=$WIFI_IP/$SUBNET_MASK \
+#        -S routers=$GATEWAY \
+#        -S domain_name_servers=$DNS1,$DNS2 \
+#        wlan0
