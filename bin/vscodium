@@ -1,0 +1,30 @@
+readonly EHIGH="\033[49;1;32m"
+readonly EERROR="\033[49;1;31m"
+readonly EEND="\033[00m"
+
+usage() {
+  echo -e "${EHIGH}Usage:${EEND} ${0} COMMAND ARGUMENTS"
+  echo -e ""
+  echo -e "    ARGUMENTS:"
+  echo -e "        "
+  echo -e "    COMMANDS:"
+  echo -e "      ${EHIGH}install${EEND}		Add repository and install VSCodium"
+  echo -e ""
+  echo -e ""
+  exit 1
+}
+
+readonly COMMAND=$1;
+shift || usage;
+case $COMMAND in
+    install)
+        # Add the GPG key of the repository:
+        wget -qO - https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg | gpg --dearmor | sudo dd of=/etc/apt/trusted.gpg.d/vscodium.gpg
+
+        # Add the repository:
+        echo 'deb https://paulcarroty.gitlab.io/vscodium-deb-rpm-repo/debs/ vscodium main' | sudo tee --append /etc/apt/sources.list.d/vscodium.list
+
+        # Update then install vscodium:
+        sudo apt update && sudo apt install codium
+    ;;
+esac
