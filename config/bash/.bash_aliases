@@ -10,5 +10,6 @@ then
 	alias gd="git diff"
 	alias gdc="git diff --cached"
 	alias ga="git add"
+	alias gap="git add --patch"
 	alias gl="git log"
 fi
