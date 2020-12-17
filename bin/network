@@ -1,14 +1,35 @@
 set -o pipefail
 
-if ( ! cat /etc/dhcpcd.conf | grep "## >>>PIMP-CONFIG" &>/dev/null);
-then
-    # (eventually) set default values, compile source file
-    # and append compiled one into destination 
-    GATEWAY="${GATEWAY:-'10.0.0.1'}" \
-    \
-    envsubst < config/network/dhcpcd.conf | sudo tee --append /etc/dhcpcd.conf >/dev/null
-    echo "static ip for interface Ethernet ($ETHERNET_IP) and Wifi ($WIFI_IP) was set"
 
-    echo "restart network interfaces"
-    sudo /etc/init.d/networking restart
+# set static IP for WIreless & Ethernet interfaces
+if [ -n $WIFI_IP ]
+then
+    sudo ip address add $WIFI_IP/$SUBNET_MASK dev wlan0
+    echo "wlan0 static ip address $WIFI_IP/$SUBNET_MASK was set"
 fi
+
+if [ -n $ETHERNET_IP ]
+then
+    sudo ip address add $ETHERNET_IP/$SUBNET_MASK dev eth0
+    echo "eth0 static ip address $ETHERNET_IP/$SUBNET_MASK was set"
+fi
+
+
+# speed up DHCP
+#  (https://wiki.archlinux.org/index.php/dhcpcd#DHCP_static_route(s)#Speed_up_DHCP_by_disabling_ARP_probing)
+echo "noarp" > /etc/dhcpcd.conf
+
+
+
+#######################
+#OHTERS:
+
+#sudo ip address add 192.168.178.48/24 dev wlan0
+#sudo ip address del 192.168.178.48/24 dev wlan0
+
+#/usr/lib/dhcpcd/dhcpcd-hooks/10-wireless-static-ip
+
+sudo dhcpcd -S ip_address=$WIFI_IP/$SUBNET_MASK \
+       -S routers=$GATEWAY \
+       -S domain_name_servers=$DNS1,$DNS2 \
+       wlan0

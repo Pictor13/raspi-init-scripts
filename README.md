@@ -22,14 +22,14 @@ Also, remember to close and reopen your shell, after running any script; or sour
 
 ## Additional commands (optional)
 
-* `./install-docker` and *docker-compose*
-* `./init-git` config, and install *github-cli*
-* `./docker-run-pihole` to execute PiHole service inside a Docker container
+* `bin/install-docker` and *docker-compose*
+* `bin/init-git` config, and install *github-cli*
+* `bin/docker-run-pihole` to execute PiHole service inside a Docker container
 * * from a machine in you network, run `nslookup flurry.com 192.168.0.50` (use RaspberryPi's IP here; find it with `ifconfig`), and ensure it's blocking the request (`Address: 0.0.0.0`). Legit domains should instead resolve correctly.
 
 ## Additional notes
 
-* run all the `bin` commands from this project root directory
+* run all the `bin` commands from this project's root directory
 * if you install Tilix terminal emulator, remember to configure the execution as login shell (see [manual](https://gnunn1.github.io/tilix-web/manual/vteconfig/#2-or-use-a-login-shell))
 * to change keyboard shortcuts edit `/etc/xdg/openbox/lxde-pi-rc.xml` and add your keybind, e.g
 ```
@@ -45,4 +45,5 @@ Also, remember to close and reopen your shell, after running any script; or sour
 ## TODO:
 
 * support other users than default `pi`
+* support changing hostname via env var
 

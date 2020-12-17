@@ -3,8 +3,9 @@
 alias ll="ls -la --color=auto"
 alias l="ls -la --color=auto"
 
-if [ $PIMP_GIT_ALIASES -eq 1 ]
+if [ $PIMP_GIT_ALIASES ]
 then
+	alias g="git status --short"
 	alias gss="git status"
 	alias gd="git diff"
 	alias gdc="git diff --cached"
