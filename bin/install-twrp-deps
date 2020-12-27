@@ -1,0 +1,113 @@
+#!/bin/bash
+
+set -e
+
+CWD=$(pwd)
+
+# dependencies
+echo -n "Do you want to install related dependencies (y/n)? "
+read -er choice
+case "$choice" in
+    y|Y)
+		sudo apt update
+		sudo add-apt-repository universe
+		sudo apt install python3 python3-serial adb fastboot dos2unix
+		# on Debian/Ubuntu you can installe instead:
+		#sudo apt-get install android-tools-adb
+	;;
+    * ) echo "assume dependencies are correct";;
+esac
+
+echo -n "WARNING 1: is the ADB enabled in your device's Developer Settings (y/n)? "
+read -er choice
+case "$choice" in
+    y|Y) echo "OK";;
+    * ) echo "then go in System Settings"
+		echo "-> Device Options"
+		echo "-> Tap 7 times on Serial Number"
+		echo "access the new menu Developer Options"
+		echo "-> Enable ADB" && exit 1;;
+esac
+
+echo -n "WARNING 2: is your device been connected via USB (y/n)? "
+read -er choice
+case "$choice" in
+    y|Y) echo "OK";;
+    * ) echo "then please connect your mobile device via USB to this machine" && exit 2;;
+esac
+
+# Instructions from:
+GUIDE_URL="https://forum.xda-developers.com/t/unlock-root-twrp-unbrick-fire-hd-10-2017-suez.3913639/"
+SCRIPTS_URL="https://forum.xda-developers.com/attachment.php?attachmentid=4731548&stc=1&d=1553629603"
+DEST_FILE="amonet-suez-v1.1.2.zip"
+
+# download scripts
+mkdir -p tmp/twrp
+cd tmp/twrp
+echo "Downloading from $SCRIPTS_URL"
+wget --no-verbose -O $DEST_FILE -o /dev/null $SCRIPTS_URL
+unzip $DEST_FILE
+
+# run scripts
+CWD=$(pwd)
+cd amonet
+sudo ./step-1.sh || MTK_MISSING=1
+
+if [ $MTK_MISSING != 0 ]
+then
+	MTKSU_DEST_FILE="mtksu.zip"
+	echo
+	echo "WARNING: if no mtk-su is found, follow the link for instructions and latest releases;"
+	echo "or run 'wget -O "$CWD/$MTKSU_DEST_FILE" -o /dev/null https://forum.xda-developers.com/attachment.php?attachmentid=5085853' in the $CWD directory"
+	echo
+	echo -n "Did you put the file in the $CWD folder? (y/n)? "
+	read -er choice
+	case "$choice" in
+		y|Y)
+			echo "OK"
+			cd $CWD
+			unzip $MTKSU_DEST_FILE -d mtksu
+			cd mtksu
+			# push script to device	
+			echo "pushing ARM (64 bit) mtk-su script to your device"
+			cp ./arm64/mtk-su $CWD/amonet/bin
+			echo "NOTE: At this point keep your tablet screen on and don't let it go to sleep."
+			# retry script
+			cd $CWD
+			cd amonet
+			sudo ./step-1.sh
+		;;
+		* ) echo "well, then you cannot continue" && exit 3;;
+	esac
+fi
+
+echo "Your device will now reboot into recovery and perform a factory reset."
+
+echo "NOTE: When you are back at initial setup, you can skip registration by selecting a WiFi-Network, then pressing Cancel and then Not Now"
+echo "NOTE: Make sure you re-enable ADB after Factory Reset."
+
+
+echo -n "WARNING 3: did the reset complete? (y/n)? "
+read -er choice
+case "$choice" in
+    y|Y) echo "OK";;
+    * ) echo "sorry about that; please check $GUIDE_URL" && exit 4;;
+esac
+
+echo -n "WARNING 4: was ADB enabled AGAIN, after the factory reset? (y/n)? "
+read -er choice
+case "$choice" in
+    y|Y) echo "OK";;
+    * )
+		echo "then go in System Settings"
+		echo "-> Device Options"
+		echo "-> Tap 7 times on Serial Number"
+		echo "access the new menu Developer Options"
+		echo "-> Enable ADB" && exit 5;;
+esac
+
+echo "The exploit will now be flashed and your device will reboot into TWRP."
+sudo ./step-2.sh
+
+echo "You can now install Magisk from TWRP, on your device."
+
